@@ -14,7 +14,8 @@ signatures), and you can "bind" a package (a module) to an interface,
 which either FAILS if the package doesn't contain all the requiired
 interface functions, or SUCCEEDS, giving you an interface value which
 allows you to ONLY call the interface functions, but of course it invokes
-the corresponding package's functions (thus behaving like method calls)
+the corresponding package's functions (thus behaving like virtual method
+calls, ie dynamic dispatch).
 
 That interface value may be passed around as a parameter, and calls
 "through it" can be made later. Note that interfaces don't tackle the
