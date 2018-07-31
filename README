@@ -12,17 +12,25 @@ if M is dynamically linked.
 
 The way you would do this is:
 
-Write some plain C modules, each containing a bunch of functions, compile
-them (with gcc) with -fPIC, and link them with -shared, then you could
-construct an interface in hypothetical TEFEL form like:
+Write some plain C modules (like pkg[12]3.[ch] in this directory), each module
+(eg. pkg1.[ch] contains a bunch of functions of varying types. Compile them
+(with gcc) with -fPIC, and link them with -shared (see the Makefile for
+details).  These can be linked normally into code that uses those modules
+directly (such as usepkg[123].c in this directory, again see the Makefile
+for the invocations).
+
+Then you could construct an interface in hypothetical TEFEL form like:
 
 %interface f12
 %func void f1( void );
 %func int f2( void );
 
-that described what functions, with what signatures, you'd need to have
-exist in your "interface".  Here we need f1 (a void->void func) and f2
-(a void->int func) to satisfy the interface imaginatively called "f12".
+this describes what functions, with what type signatures (number
+of parameters, parameter types, and return type), you'd need to have
+exist in your "interface".
+
+Here we need f1 (a void->void func), and f2 (a void->int func), to satisfy
+the interface imaginatively called "f12".
 
 You could translate this (by hand) to a plain C module:
 
@@ -31,8 +39,7 @@ f12.h:
 // vvf: a pointer to a void->void function
 typedef void (*vvf)( void );
 
-// ivf: a pointer to a void->int function ("int-returning void func" is
-// the mnemonic)
+// ivf: a pointer to a void->int function, mnemonic; "int-returning void func"
 typedef int (*ivf)( void );
 
 // This represents "interface f12": a SLOT for each function..
@@ -42,8 +49,20 @@ typedef struct
 	ivf   f2;
 } *f12;
 
-Then binding of some dynamically linked module's libM.so to interface "f12"
-could be done by roughly the following pseudo-code:
+// the bind function
+// f12 x = f12_bind( basename, char *errmsg );
+//	locate "lib<basename>.so", and attempt to locate the
+//	required symbols f1 and f2 (or basename_f1 and basename_f2...),
+//	to "bind" lib<basename>.so to the f12 interface.
+//	If we fail: strcpy an error message into errmsg and return NULL
+//	If we succeed: return an newly malloc()d f12 object
+//	with the function pointers bound to the corresponding
+//	functions in lib<basename>.so
+extern f12 f12_bind( char * basename, char * errmsg );
+
+To implement the f12_bind() function, binding a dynamically linked
+module called M's libM.so to interface "f12" could be done by roughly
+the following pseudo-code:
 
 void *dl = dlopen( "libM.so" );
 return null if dl is null
@@ -64,12 +83,12 @@ return r
 see f12.c for the full C implementation of this, wrapped up as an "f12_bind()"
 function that takes a module basename and a string pointer to a block of
 space big enough to store an error message, and returns NULL if the bind
-fails, or an f12 malloc()d struct pointer, with all the function pointers
-initialized to point to the corresponding named functions in the dynamically
-linked object file.
+fails (storing an error message into the string pointer), or an f12 malloc()d
+struct pointer, with all the function pointers initialized to point to the
+corresponding named functions in the dynamically linked object file.
 
-Client code can bind a module "pkg1" to the interface "f12", check it works,
-and then invoke the functions, via:
+Client code (such as usef12pkg1.c) can attempt to bind the module "pkg1" to
+the interface "f12", check it works, and then invoke the bound functions, via:
 
 	char errmsg[1024];
 	f12 pkg1 = f12_bind( "pkg1", errmsg );
@@ -83,16 +102,22 @@ and then invoke the functions, via:
 		printf( "pkg1->f2 returned %d\n", n );
 	}
 
+Note that as an extra convenience, f12.c looks us, for each function F
+in module M, symbols F and M_F (in that order), binding whichever one it
+finds one.  
+
 Now, what has this to do with TEFEL? The core point of TEFEL is that
 FIRST you think up an idea, SECOND you work out how to manually translate
 hypothetical new TEFEL directives into plain C, and THIRD you build a
 TEFEL processor.
 
 Without the SECOND part, having a solid implementation strategy worked
-out, you can't go onto part THREE. So although I haven't built a C+Go
-interfaces TEFEL tool, I think I can.
+out, there is absolutely no point in proceeding onto part THREE. So
+although I haven't built a "C+Go interfaces to C translator" tool using
+my TEFEL concept, I'm pretty sure that I can.
 
-Of course it's platform dependent, which is not ideal. If anyone can think
-of a way of making this portable, please tell me?
+Of course the implementation technique (libdl) is currently platform
+dependent, which is not ideal. If anyone can think of a way of making this
+more portable, please tell me?
 
 			Duncan White, July 2018

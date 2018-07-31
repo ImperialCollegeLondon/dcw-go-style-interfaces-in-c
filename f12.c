@@ -12,13 +12,13 @@
 #include "f12.h"
 
 
-static vvf bindsym( void *dl, char *basename, char *symbol )
+static vvf bindsym( void *dl, char *modulename, char *symbol )
 {
 	vvf r = dlsym( dl, symbol );
 	if( r == NULL )
 	{
 		bigstr s;
-		sprintf( s, "%s_%s", basename, symbol );
+		sprintf( s, "%s_%s", modulename, symbol );
 		r = dlsym( dl, s );
 	}
 	return r;
@@ -26,23 +26,23 @@ static vvf bindsym( void *dl, char *basename, char *symbol )
 
 
 /*
- * f12 x = f12_bind( basename, char *errmsg );
- *	locate "lib<basename>.so", and attempt to locate the
- *	required symbols f1 and f2 (or basename_f1 and basename_f2...),
- *	to "bind" lib<basename>.so to the f12 interface.
+ * f12 x = f12_bind( modulename, char *errmsg );
+ *	locate "lib<modulename>.so", and attempt to locate the
+ *	required symbols f1 and f2 (or modulename_f1 and modulename_f2...),
+ *	to "bind" lib<modulename>.so to the f12 interface.
  *	If we fail: strcpy an error message into errmsg and return NULL
  *	If we succeed: return an newly malloc()d f12 object
  *	with the function pointers bound to the corresponding
- *	functions in lib<basename>.so
+ *	functions in lib<modulename>.so
  */
-f12 f12_bind( char *basename, char *errmsg )
+f12 f12_bind( char *modulename, char *errmsg )
 {
-	bigstr soname;
-	sprintf( soname, "lib%s.so", basename );
-	void *dl = dlopen( soname, RTLD_NOW );
+	bigstr libname;
+	sprintf( libname, "lib%s.so", modulename );
+	void *dl = dlopen( libname, RTLD_NOW );
 	if( dl == NULL )
 	{
-		sprintf( errmsg, "f12_bind: dlopen of %s failed", soname );
+		sprintf( errmsg, "f12_bind: dlopen of %s failed", libname );
 		return NULL;
 	}
 
@@ -53,19 +53,19 @@ f12 f12_bind( char *basename, char *errmsg )
 		return NULL;
 	}
 
-	r->f1 = bindsym( dl, basename, "f1" );
+	r->f1 = bindsym( dl, modulename, "f1" );
 	if( r->f1 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f12_bind: No symbol 'f1' in %s", soname );
+		sprintf( errmsg, "f12_bind: No symbol 'f1' in %s", libname );
 		return NULL;
 	}
 
-	r->f2 = (ivf) bindsym( dl, basename, "f2" );
+	r->f2 = (ivf) bindsym( dl, modulename, "f2" );
 	if( r->f2 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f12_bind: No symbol 'f2' in %s", soname );
+		sprintf( errmsg, "f12_bind: No symbol 'f2' in %s", libname );
 		return NULL;
 	}
 
