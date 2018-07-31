@@ -2,3 +2,10 @@
 *.so
 *.so.*
 core
+usef12bothpkgs
+usef12pkg1
+usef12pkg2
+usef12threepkgs
+usef34threepkgs
+usepkg1
+usepkg2
