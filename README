@@ -107,9 +107,9 @@ the interface "f12", check it works, and then invoke the bound functions, via:
 		printf( "pkg1->f2 returned %d\n", n );
 	}
 
-Note that as an extra convenience, f12.c looks us, for each function F
-in module M, symbols F and M_F (in that order), binding whichever one it
-finds one.  
+Note that as an extra convenience, for each function F in module M,
+f12.c looks for symbols F and M_F (in that order), binding whichever
+one it finds first.
 
 Now, what has this to do with TEFEL? The core point of TEFEL is that
 FIRST you think up an idea, SECOND you work out how to manually translate
