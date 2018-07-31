@@ -54,15 +54,15 @@ typedef struct
 } *f12;
 
 // the bind function
-// f12 x = f12_bind( basename, char *errmsg );
-//	locate "lib<basename>.so", and attempt to locate the
-//	required symbols f1 and f2 (or basename_f1 and basename_f2...),
-//	to "bind" lib<basename>.so to the f12 interface.
+// f12 x = f12_bind( modulename, char *errmsg );
+//	locate "lib<modulename>.so", and attempt to locate the
+//	required symbols f1 and f2 (or modulename_f1 and modulename_f2...),
+//	to "bind" lib<modulename>.so to the f12 interface.
 //	If we fail: strcpy an error message into errmsg and return NULL
 //	If we succeed: return an newly malloc()d f12 object
 //	with the function pointers bound to the corresponding
-//	functions in lib<basename>.so
-extern f12 f12_bind( char * basename, char * errmsg );
+//	functions in lib<modulename>.so
+extern f12 f12_bind( char * modulename, char * errmsg );
 
 To implement the f12_bind() function, binding a dynamically linked
 module called M's libM.so to interface "f12" could be done by roughly
@@ -85,11 +85,12 @@ r->f2 = f2
 return r
 
 see f12.c for the full C implementation of this, wrapped up as an "f12_bind()"
-function that takes a module basename and a string pointer to a block of
-space big enough to store an error message, and returns NULL if the bind
-fails (storing an error message into the string pointer), or an f12 malloc()d
-struct pointer, with all the function pointers initialized to point to the
-corresponding named functions in the dynamically linked object file.
+function that takes a module name and a string pointer to a block of space big
+enough to store any reasonable error message, and returns NULL if the bind
+fails (storing an error message into the string pointer), or, if the bind
+succeeds, returns an f12 malloc()d struct pointer, with all the function
+pointer slots initialized to point to the corresponding named functions in the
+dynamically linked object file.
 
 Client code (such as usef12pkg1.c) can attempt to bind the module "pkg1" to
 the interface "f12", check it works, and then invoke the bound functions, via:
