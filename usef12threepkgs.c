@@ -9,41 +9,30 @@
 #include "f12.h"
 
 
+static char *module[] =
+{
+	"pkg1",
+	"pkg2",
+	"pkg3",
+	NULL,
+};
+
 int main( void )
 {
-	bigstr errmsg;
-	f12 pkg1 = f12_bind( "pkg1", errmsg );
-	int n;
-	if( pkg1 == NULL )
+	for( int i=0; module[i] != NULL; i++ )
 	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg1->f1();
-		n = pkg1->f2();
-		printf( "pkg1->f2 returned %d\n", n );
-	}
-
-	f12 pkg2 = f12_bind( "pkg2", errmsg );
-	if( pkg2 == NULL )
-	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg2->f1();
-		n = pkg2->f2();
-		printf( "pkg2->f2 returned %d\n", n );
-	}
-
-	f12 pkg3 = f12_bind( "pkg3", errmsg );
-	if( pkg3 == NULL )
-	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg3->f1();
-		n = pkg3->f2();
-		printf( "pkg3->f2 returned %d\n", n );
+		bigstr errmsg;
+		f12 p = f12_bind( module[i], errmsg );
+		int n;
+		if( p == NULL )
+		{
+			printf( "%s\n", errmsg );
+		} else
+		{
+			p->f1();
+			n = p->f2();
+			printf( "%s->f2 returned %d\n", module[i], n );
+		}
 	}
 
 	return 0;
