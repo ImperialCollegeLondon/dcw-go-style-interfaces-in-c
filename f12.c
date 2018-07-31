@@ -26,7 +26,7 @@ static vvf bindsym( void *dl, char *modulename, char *symbol )
 
 
 /*
- * f12 x = f12_bind( modulename, char *errmsg );
+ * f12 x = f12_bind( char *modulename, char *errmsg );
  *	locate "lib<modulename>.so", and attempt to locate the
  *	required symbols f1 and f2 (or modulename_f1 and modulename_f2...),
  *	to "bind" lib<modulename>.so to the f12 interface.

@@ -16,7 +16,7 @@ typedef struct
 } *f12;
 
 // the bind function
-// f12 x = f12_bind( basename, char *errmsg );
+// f12 x = f12_bind( char *basename, char *errmsg );
 //	locate "lib<basename>.so", and attempt to locate the
 //	required symbols f1 and f2 (or basename_f1 and basename_f2...),
 //	to "bind" lib<basename>.so to the f12 interface.
