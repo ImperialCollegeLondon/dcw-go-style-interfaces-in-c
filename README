@@ -12,10 +12,12 @@ if M is dynamically linked.
 
 The way you would do this is:
 
-Write some plain C modules (like pkg[12]3.[ch] in this directory), each module
-(eg. pkg1.[ch] contains a bunch of functions of varying types. Compile them
-(with gcc) with -fPIC, and link them with -shared (see the Makefile for
-details).  These can be linked normally into code that uses those modules
+Write some plain C modules (like pkg[1-3].[ch] in this directory),
+each module such as pkg1.[ch] contains a bunch of functions of varying
+types. Compile each module (with gcc) with -fPIC, and link them with
+-shared (see the Makefile for details) to create .so dynamic libraries.
+
+These .so files can be linked normally into code that uses those modules
 directly (such as usepkg[123].c in this directory, again see the Makefile
 for the invocations).
 
@@ -30,7 +32,9 @@ of parameters, parameter types, and return type), you'd need to have
 exist in your "interface".
 
 Here we need f1 (a void->void func), and f2 (a void->int func), to satisfy
-the interface imaginatively called "f12".
+our interface imaginatively called "f12".
+Any module which implements f1 amd f2, with matching type signatures, is
+"compatible" with interface f12.
 
 You could translate this (by hand) to a plain C module:
 
