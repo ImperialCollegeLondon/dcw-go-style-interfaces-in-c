@@ -1,0 +1,8 @@
+/*
+ *	interface f34: a collection of C functions, in TEFEL form
+ */
+
+%interface f34
+
+%func void f3( char *s, int x );
+%func void *f4( int n );

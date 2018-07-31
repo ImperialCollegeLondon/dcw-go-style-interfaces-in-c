@@ -1,0 +1,98 @@
+some thoughts I had about how could we implement Go-style interfaces to
+packages in C.  It's a side effect of a LinkedIn discussion in the Plain
+Ordinary C group that I started, to discuss my TEFEL idea - Nigel Evans
+suggested some form of lightweight OO for C, on the lines of JavaScript's
+prototype-based model, and I said "or what about Go-style interfaces.."
+and then started thinking:-)
+
+I realised that Unix's dynamic linking (aka libdl, dlopen() and dlsym())
+allow you to implement Go-style interfaces. Let's focus on "does a module
+M contain a function called M_X". dlsym() can answer that question -
+if M is dynamically linked.
+
+The way you would do this is:
+
+Write some plain C modules, each containing a bunch of functions, compile
+them (with gcc) with -fPIC, and link them with -shared, then you could
+construct an interface in hypothetical TEFEL form like:
+
+%interface f12
+%func void f1( void );
+%func int f2( void );
+
+that described what functions, with what signatures, you'd need to have
+exist in your "interface".  Here we need f1 (a void->void func) and f2
+(a void->int func) to satisfy the interface imaginatively called "f12".
+
+You could translate this (by hand) to a plain C module:
+
+f12.h:
+
+// vvf: a pointer to a void->void function
+typedef void (*vvf)( void );
+
+// ivf: a pointer to a void->int function ("int-returning void func" is
+// the mnemonic)
+typedef int (*ivf)( void );
+
+// This represents "interface f12": a SLOT for each function..
+typedef struct
+{
+	vvf   f1;
+	ivf   f2;
+} *f12;
+
+Then binding of some dynamically linked module's libM.so to interface "f12"
+could be done by roughly the following pseudo-code:
+
+void *dl = dlopen( "libM.so" );
+return null if dl is null
+
+r = malloc(sizeof(*r))
+return null if r is null
+
+vvf f1 = dlsym( dl, "M_f1" );
+return null if f1 == null
+r->f1 = f1
+
+ivf f2 = dlsym( dl, "M_f2");
+return null if f2 == null
+r->f2 = f2
+
+return r
+
+see f12.c for the full C implementation of this, wrapped up as an "f12_bind()"
+function that takes a module basename and a string pointer to a block of
+space big enough to store an error message, and returns NULL if the bind
+fails, or an f12 malloc()d struct pointer, with all the function pointers
+initialized to point to the corresponding named functions in the dynamically
+linked object file.
+
+Client code can bind a module "pkg1" to the interface "f12", check it works,
+and then invoke the functions, via:
+
+	char errmsg[1024];
+	f12 pkg1 = f12_bind( "pkg1", errmsg );
+	if( pkg1 == NULL )		// bind failed
+	{
+		printf( "%s\n", errmsg );
+	} else				// bind succeeded
+	{
+		pkg1->f1();
+		int n = pkg1->f2();
+		printf( "pkg1->f2 returned %d\n", n );
+	}
+
+Now, what has this to do with TEFEL? The core point of TEFEL is that
+FIRST you think up an idea, SECOND you work out how to manually translate
+hypothetical new TEFEL directives into plain C, and THIRD you build a
+TEFEL processor.
+
+Without the SECOND part, having a solid implementation strategy worked
+out, you can't go onto part THREE. So although I haven't built a C+Go
+interfaces TEFEL tool, I think I can.
+
+Of course it's platform dependent, which is not ideal. If anyone can think
+of a way of making this portable, please tell me?
+
+			Duncan White, July 2018
