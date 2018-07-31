@@ -42,7 +42,12 @@ types. Compile each module (with gcc) with -fPIC, and link them with
 
 These .so files can be linked normally into code that uses those modules
 directly (such as usepkg[123].c in this directory, again see the Makefile
-for the invocations).
+for the invocations).  Note that you may need to set the environment variable
+LD_LIBRARY_PATH to include "." to enable this.
+
+Csh users should do: setenv LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
+Bash/sh users should do: export LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
+
 
 Then you could construct an interface in hypothetical TEFEL form like:
 
