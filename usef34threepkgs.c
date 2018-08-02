@@ -9,40 +9,32 @@
 #include "f34.h"
 
 
+static char *module[] =
+{
+	"pkg1",
+	"pkg2",
+	"pkg3",
+	NULL,
+};
+
 int main( void )
 {
-	bigstr errmsg;
-	f34 pkg1 = f34_bind( "pkg1", errmsg );
-	if( pkg1 == NULL )
+	for( int i=0; module[i] != NULL; i++ )
 	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg1->f3( "hello", 42 );
-		void *p = pkg1->f4( 42 );
-		printf( "pkg1->f4(42) returned %lu\n", (unsigned long)p );
-	}
-
-	f34 pkg2 = f34_bind( "pkg2", errmsg );
-	if( pkg2 == NULL )
-	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg2->f3( "hello", 42 );
-		void *p = pkg2->f4( 42 );
-		printf( "pkg2->f4(42) returned %lu\n", (unsigned long)p );
-	}
-
-	f34 pkg3 = f34_bind( "pkg3", errmsg );
-	if( pkg3 == NULL )
-	{
-		printf( "%s\n", errmsg );
-	} else
-	{
-		pkg3->f3( "hello", 42 );
-		void *p = pkg3->f4( 42 );
-		printf( "pkg3->f4(42) returned %lu\n", (unsigned long)p );
+		bigstr errmsg;
+		f34 p = f34_bind( module[i], errmsg );
+		if( p == NULL )
+		{
+			printf( "%s\n", errmsg );
+		} else
+		{
+			printf( "calling %s->f3( 'hello', 42 )\n", module[i] );
+			p->f3( "hello", 42 );
+			printf( "calling %s->f4( 42 )\n", module[i] );
+			void *vp = p->f4( 42 );
+			printf( "%s->f4(42) returned %lu\n",
+				module[i], (unsigned long)vp );
+		}
 	}
 
 	return 0;
