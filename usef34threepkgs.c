@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "bigstr.h"
 #include "f34.h"
 
 
@@ -32,7 +33,7 @@ int main( void )
 			p->f3( "hello", 42 );
 			printf( "calling %s->f4( 42 )\n", module[i] );
 			void *vp = p->f4( 42 );
-			printf( "%s->f4(42) returned %lu\n",
+			printf( "%s->f4(42) returned %lx\n",
 				module[i], (unsigned long)vp );
 		}
 	}

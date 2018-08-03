@@ -9,36 +9,25 @@
 #include <assert.h>
 #include <dlfcn.h>
 
+#include "bigstr.h"
 #include "f12.h"
-
-
-static vvf bindsym( void *dl, char *modulename, char *symbol )
-{
-	vvf r = dlsym( dl, symbol );
-	if( r == NULL )
-	{
-		bigstr s;
-		sprintf( s, "%s_%s", modulename, symbol );
-		r = dlsym( dl, s );
-	}
-	return r;
-}
+#include "bindsym.h"
 
 
 /*
- * f12 x = f12_bind( char *modulename, char *errmsg );
- *	locate "lib<modulename>.so", and attempt to locate the
- *	required symbols f1 and f2 (or modulename_f1 and modulename_f2...),
- *	to "bind" lib<modulename>.so to the f12 interface.
+ * f12 x = f12_bind( char *module, char *errmsg );
+ *	locate "lib<module>.so", and attempt to locate the
+ *	required symbols f1 and f2 (or module_f1 and module_f2...),
+ *	to "bind" lib<module>.so to the f12 interface.
  *	If we fail: strcpy an error message into errmsg and return NULL
  *	If we succeed: return an newly malloc()d f12 object
  *	with the function pointers bound to the corresponding
- *	functions in lib<modulename>.so
+ *	functions in lib<module>.so
  */
-f12 f12_bind( char *modulename, char *errmsg )
+f12 f12_bind( char *module, char *errmsg )
 {
 	bigstr libname;
-	sprintf( libname, "lib%s.so", modulename );
+	sprintf( libname, "lib%s.so", module );
 	void *dl = dlopen( libname, RTLD_NOW );
 	if( dl == NULL )
 	{
@@ -53,19 +42,24 @@ f12 f12_bind( char *modulename, char *errmsg )
 		return NULL;
 	}
 
-	r->f1 = bindsym( dl, modulename, "f1" );
+	bindsym_info   info;
+	info.dl        = dl;
+	info.interface = "f12";
+	info.module    = module;
+	info.libname   = libname;
+	info.errmsg    = errmsg;
+
+	r->f1 = (f12_vvf) bindsym( &info, "f1", "f1_void_void" );
 	if( r->f1 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f12_bind: No symbol 'f1' in %s", libname );
 		return NULL;
 	}
 
-	r->f2 = (ivf) bindsym( dl, modulename, "f2" );
+	r->f2 = (f12_ivf) bindsym( &info, "f2", "f2_int_void" );
 	if( r->f2 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f12_bind: No symbol 'f2' in %s", libname );
 		return NULL;
 	}
 

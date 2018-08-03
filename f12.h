@@ -1,18 +1,15 @@
-#define BIGSTRSIZE 1024
-typedef char bigstr[BIGSTRSIZE];
-
 // vvf: a pointer to a void->void function
-typedef void (*vvf)( void );
+typedef void (*f12_vvf)( void );
 
 // ivf: a pointer to a void->int function, mnemonic; "int-returning void func"
-typedef int (*ivf)( void );
+typedef int (*f12_ivf)( void );
 
 // This represents the "interface f12" at run-time.
 // It's a container of SLOTS for the f12 functions..
 typedef struct
 {
-	vvf   f1;
-	ivf   f2;
+	f12_vvf   f1;
+	f12_ivf   f2;
 } *f12;
 
 // the bind function

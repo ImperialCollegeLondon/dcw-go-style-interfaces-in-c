@@ -29,10 +29,10 @@ void *pkg1_f4( int n )
 }
 
 // attempt at checking function signatures.  Could munge the function
-// name itself, as in C++ type munging, but I wondered if this flag
-// variable per function [never used] is a neater approach, at least
-// when normal use (not via the interface) is concerned
+// name itself, as in C++ type munging, but that makes ordinary use
+// of the modules really hard.  So I wondered if this flag variable per
+// function [never used] is a neater approach?
 char pkg1_f1_void_void;
 char pkg1_f2_int_void;
 char pkg1_f3_void_charstar_int;
-char pkg1_f4_voidstart_int;
+char pkg1_f4_voidstar_int;

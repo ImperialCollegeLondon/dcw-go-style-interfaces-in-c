@@ -9,40 +9,29 @@
 #include <assert.h>
 #include <dlfcn.h>
 
+#include "bigstr.h"
+#include "bindsym.h"
 #include "f34.h"
 
 
-static vvf bindsym( void *dl, char *basename, char *symbol )
-{
-	vvf r = dlsym( dl, symbol );
-	if( r == NULL )
-	{
-		bigstr s;
-		sprintf( s, "%s_%s", basename, symbol );
-		r = dlsym( dl, s );
-	}
-	return r;
-}
-
-
 /*
- * f34 x = f34_bind( basename, char *errmsg );
- *	locate "lib<basename>.so", and attempt to locate the
- *	required symbols f3 and f4 (or basename_f3...),
- *	to "bind" lib<basename>.so to the f34 interface.
+ * f34 x = f34_bind( module, char *errmsg );
+ *	locate "lib<module>.so", and attempt to locate the
+ *	required symbols f3 and f4 (or module_f3...),
+ *	to "bind" lib<module>.so to the f34 interface.
  *	If we fail: strcpy an error message into errmsg and return NULL
  *	If we succeed: return an newly malloc()d f34 object
  *	with the function pointers bound to the corresponding
- *	functions in lib<basename>.so
+ *	functions in lib<module>.so
  */
-f34 f34_bind( char *basename, char *errmsg )
+f34 f34_bind( char *module, char *errmsg )
 {
-	bigstr soname;
-	sprintf( soname, "lib%s.so", basename );
-	void *dl = dlopen( soname, RTLD_NOW );
+	bigstr libname;
+	sprintf( libname, "lib%s.so", module );
+	void *dl = dlopen( libname, RTLD_NOW );
 	if( dl == NULL )
 	{
-		sprintf( errmsg, "f34_bind: dlopen of %s failed", soname );
+		sprintf( errmsg, "f34_bind: dlopen of %s failed", libname );
 		return NULL;
 	}
 
@@ -53,19 +42,25 @@ f34 f34_bind( char *basename, char *errmsg )
 		return NULL;
 	}
 
-	r->f3 = (vcsif) bindsym( dl, basename, "f3" );
+	bindsym_info   info;
+	info.dl        = dl;
+	info.interface = "f34";
+	info.module    = module;
+	info.libname   = libname;
+	info.errmsg    = errmsg;
+
+	r->f3 = (f34_vcsif) bindsym( &info,
+			"f3", "f3_void_charstar_int" );
 	if( r->f3 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f34_bind: No symbol 'f3' in %s", soname );
 		return NULL;
 	}
 
-	r->f4 = (vsif) bindsym( dl, basename, "f4" );
+	r->f4 = (f34_vsif) bindsym( &info, "f4", "f4_voidstar_int" );
 	if( r->f4 == NULL )
 	{
 		free(r);
-		sprintf( errmsg, "f34_bind: No symbol 'f4' in %s", soname );
 		return NULL;
 	}
 

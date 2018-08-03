@@ -15,20 +15,24 @@ usepkg1:	usepkg1.o libpkg1.so
 usepkg2:	usepkg2.o libpkg2.so
 	$(CC) -o usepkg2 usepkg2.o -L. -lpkg2
 
-usef12pkg1:	usef12pkg1.o f12.o
-	$(CC) -o usef12pkg1 usef12pkg1.o f12.o -ldl
+usef12pkg1:	usef12pkg1.o f12.o bindsym.o
+	$(CC) -o usef12pkg1 usef12pkg1.o f12.o bindsym.o -ldl
 
-usef12pkg2:	usef12pkg2.o f12.o
-	$(CC) -o usef12pkg2 usef12pkg2.o f12.o -ldl
+usef12pkg2:	usef12pkg2.o f12.o bindsym.o
+	$(CC) -o usef12pkg2 usef12pkg2.o f12.o bindsym.o -ldl
 
-usef12bothpkgs:	usef12bothpkgs.o f12.o
-	$(CC) -o usef12bothpkgs usef12bothpkgs.o f12.o -ldl
+usef12bothpkgs:	usef12bothpkgs.o f12.o bindsym.o
+	$(CC) -o usef12bothpkgs usef12bothpkgs.o f12.o bindsym.o -ldl
 
-usef12threepkgs:	usef12threepkgs.o f12.o
-	$(CC) -o usef12threepkgs usef12threepkgs.o f12.o -ldl
+usef12threepkgs:	usef12threepkgs.o f12.o bindsym.o
+	$(CC) -o usef12threepkgs usef12threepkgs.o f12.o bindsym.o -ldl
 
-usef34threepkgs:	usef34threepkgs.o f34.o
-	$(CC) -o usef34threepkgs usef34threepkgs.o f34.o -ldl
+usef34threepkgs:	usef34threepkgs.o f34.o bindsym.o
+	$(CC) -o usef34threepkgs usef34threepkgs.o f34.o bindsym.o -ldl
+
+bindsym.o:	bindsym.h bigstr.h
+f12.o:		f12.h bindsym.h bigstr.h
+f34.o:		f34.h bindsym.h bigstr.h
 
 libpkg1.so:	pkg1.o
 	$(CC) -shared -Wl,-soname,libpkg1.so.1 -o libpkg1.so.1 pkg1.o
