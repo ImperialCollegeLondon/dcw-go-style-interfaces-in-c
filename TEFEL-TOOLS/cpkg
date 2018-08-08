@@ -76,10 +76,8 @@ fun handle_line( $line )
 		$name =~ s/^${package}_//;	# remove the package name
 		my $sigvar = "${package}_${name}_${sig}";
 
-		my $text = "// $funcname signature variable:\n".
-			   "char $sigvar;\n".
-			   "// $funcname function:\n".
-			   "$origline\n";
+		my $text = "char $sigvar;\t// $funcname signature variable:\n".
+			   "$origline\t// $funcname function:\n";
 		return $text;
 	}
 	fatal( $line, "Unhandled % line" );

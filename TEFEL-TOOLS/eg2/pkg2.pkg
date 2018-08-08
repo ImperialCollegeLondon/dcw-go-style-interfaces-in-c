@@ -32,7 +32,3 @@ static int hello = 3;
 }
 
 // function signature checking variables will be automatically generated.
-// eg. char pkg2_f1_void_void;
-//     char pkg2_f2_int_int;
-//     char pkg2_f3_void_charstar_int;
-//     char pkg2_f4_voidstar_int;
