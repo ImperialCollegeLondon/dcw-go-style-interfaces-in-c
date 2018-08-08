@@ -121,7 +121,7 @@ succeeds, returns an f12 malloc()d struct pointer, with all the function
 pointer slots initialized to point to the corresponding named functions in the
 dynamically linked object file.
 
-Client code (such as usef12pkg1.c) can attempt to bind the module "pkg1" to
+Client code (such as f12pkg1.c) can attempt to bind the module "pkg1" to
 the interface "f12", check it works, and then invoke the bound functions, via:
 
 	char errmsg[1024];
