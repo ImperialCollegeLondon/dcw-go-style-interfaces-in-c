@@ -2,14 +2,21 @@ Ok, so this subdir contains my experimental TEFEL style tools "cint" and "cpkg"
 to translate C + Go-style interfaces (and packages) to plain C.  See the upper
 README for the broader context.
 
-Here, you construct an interface in hypothetical TEFEL form like:
+To use these tools (look in eg1 for a simple example)
+
+First, you construct an interface in hypothetical TEFEL form like:
 
 f12.interface:
 
 %func void f1( void );
 %func int f2( void );
 
-Then you can write a package against that interface via:
+(and use the "cint" tool to generate a complete f12.[ch] C module
+that implements an f12_bind() function to attempt to bind a dynamically
+linked module to the f12 interface, and a function-pointer-slot based
+data type called f12 to represent the result of such a bind.
+
+Second, you can write a package against that interface via:
 
 pkg1.pkg:
 
@@ -18,7 +25,24 @@ pkg1.pkg:
 ..
 }
 
-etc.  See eg1 and eg2 directories for the above example, rejigged using
-actual tools (cint and cpkg) to generate most of the C source code).
+etc, this is ordinary C code, just with the public functions marked via
+"%func".  Each %func line turns into an automatically generated function
+signature checking variable, followed by the unmodified function declaration.
+So,
+
+%func void pkg1_f1( void )
+{..
+
+turns into:
+
+char pkg1_f1_void_void; // pkg1_f1 signature variable:
+void pkg1_f1( void )    // pkg1_f1 function:
+{..
+
+
+See the eg1 directory for this example, built using cint and cpkg to
+generate most of the C source code), and the bigger eg2 directory
+showing the complete example from the directory above this, again built
+using cint and cpkg rather than manual encoding.
 
 			Duncan White, August 2018
