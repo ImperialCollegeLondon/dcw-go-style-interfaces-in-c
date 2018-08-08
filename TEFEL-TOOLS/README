@@ -1,0 +1,24 @@
+Ok, so this subdir contains my experimental TEFEL style tools "cint" and "cpkg"
+to translate C + Go-style interfaces (and packages) to plain C.  See the upper
+README for the broader context.
+
+Here, you construct an interface in hypothetical TEFEL form like:
+
+f12.interface:
+
+%func void f1( void );
+%func int f2( void );
+
+Then you can write a package against that interface via:
+
+pkg1.pkg:
+
+%func void pkg1_f1( void )
+{
+..
+}
+
+etc.  See eg1 and eg2 directories for the above example, rejigged using
+actual tools (cint and cpkg) to generate most of the C source code).
+
+			Duncan White, August 2018

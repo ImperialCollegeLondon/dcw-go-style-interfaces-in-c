@@ -1,0 +1,18 @@
+/*
+ *	pkg3: a third collection of C functions, that DOESN'T
+ *	      satisfy f12 or f34..
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+%func void f1( void )
+{
+	printf( "pkg3::f1\n" );
+}
+
+%func int f3( char *s, int n )
+{
+	printf( "pkg3::f3, s='%s', n=%d\n", s, n );
+	return 3;
+}

@@ -147,11 +147,19 @@ TEFEL processor.
 
 Without the SECOND part, having a solid implementation strategy worked
 out, there is absolutely no point in proceeding onto part THREE. So
-although I haven't built a "C+Go interfaces to C translator" tool using
+although I haven't yet built a "C+Go interfaces to C translator" tool using
 my TEFEL concept, I'm pretty sure that I can.
 
 Of course the implementation technique (libdl) is currently platform
 dependent, which is not ideal. If anyone can think of a way of making this
 more portable, please tell me?
 
-			Duncan White, July 2018
+
+UPDATE:  I have now implemented two TEFEL-style tools ("cint" and "cpkg") to
+transform C+Interfaces and C+Packages input syntax into plain C, see the new
+TEFEL-TOOLS directory for all the code, and two worked examples.  For the
+first time, my cxxx tools have much of the shared support code broken out
+into Support.pm (for most of the parsing code, generalised) and Sig.pm (for
+code to generate function parameter and return type signatures).
+
+			Duncan White, July-August 2018
