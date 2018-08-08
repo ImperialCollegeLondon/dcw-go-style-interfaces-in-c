@@ -35,16 +35,10 @@ f12.o:		f12.h bindsym.h bigstr.h
 f34.o:		f34.h bindsym.h bigstr.h
 
 libpkg1.so:	pkg1.o
-	$(CC) -shared -Wl,-soname,libpkg1.so.1 -o libpkg1.so.1 pkg1.o
-	rm -f libpkg1.so
-	ln -s libpkg1.so.1 libpkg1.so
+	$(CC) -shared -Wl,-soname,libpkg1.so -o libpkg1.so pkg1.o
 
 libpkg2.so:	pkg2.o
-	$(CC) -shared -Wl,-soname,libpkg2.so.1 -o libpkg2.so.1 pkg2.o
-	rm -f libpkg2.so
-	ln -s libpkg2.so.1 libpkg2.so
+	$(CC) -shared -Wl,-soname,libpkg2.so -o libpkg2.so pkg2.o
 
 libpkg3.so:	pkg3.o
-	$(CC) -shared -Wl,-soname,libpkg3.so.1 -o libpkg3.so.1 pkg3.o
-	rm -f libpkg3.so
-	ln -s libpkg3.so.1 libpkg3.so
+	$(CC) -shared -Wl,-soname,libpkg3.so -o libpkg3.so pkg3.o
