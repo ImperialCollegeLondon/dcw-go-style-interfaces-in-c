@@ -2,7 +2,5 @@
  *	interface f12: a collection of C functions, in TEFEL form
  */
 
-%interface f12
-
 %func void f1( void );
 %func int f2( void );

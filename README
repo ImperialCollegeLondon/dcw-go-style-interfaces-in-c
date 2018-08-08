@@ -51,7 +51,8 @@ Bash/sh users should do: export LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
 
 Then you could construct an interface in hypothetical TEFEL form like:
 
-%interface f12
+f12.interface:
+
 %func void f1( void );
 %func int f2( void );
 
@@ -61,7 +62,7 @@ exist in your "interface".
 
 Here we need f1 (a void->void func), and f2 (a void->int func), to satisfy
 our interface imaginatively called "f12".
-Any module which implements f1 amd f2, with matching type signatures, is
+Any module which implements f1 and f2, with matching type signatures, is
 "compatible" with interface f12.
 
 You could translate this (by hand) to a plain C module:
