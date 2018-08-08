@@ -1,5 +1,5 @@
 /*
- *	usef12pkg2: let's try to access pkg2 via interface "f12"
+ *	f12pkg2: let's try to access pkg2 via interface "f12"
  */
 
 #include <stdio.h>

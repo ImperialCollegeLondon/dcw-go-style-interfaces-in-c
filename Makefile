@@ -1,8 +1,8 @@
 CC	=	gcc
 CFLAGS	=	-Wall -fPIC
 BUILD	=	libpkg1.so libpkg2.so libpkg3.so usepkg1 usepkg2 \
-		usef12pkg1 usef12pkg2 usef12bothpkgs usef12threepkgs \
-		usef34threepkgs
+		f12pkg1 f12pkg2 f12bothpkgs f12namedpkgs \
+		f34namedpkgs
 
 all:	$(BUILD)
 
@@ -15,20 +15,20 @@ usepkg1:	usepkg1.o libpkg1.so
 usepkg2:	usepkg2.o libpkg2.so
 	$(CC) -o usepkg2 usepkg2.o -L. -lpkg2
 
-usef12pkg1:	usef12pkg1.o f12.o bindsym.o
-	$(CC) -o usef12pkg1 usef12pkg1.o f12.o bindsym.o -ldl
+f12pkg1:	f12pkg1.o f12.o bindsym.o
+	$(CC) -o f12pkg1 f12pkg1.o f12.o bindsym.o -ldl
 
-usef12pkg2:	usef12pkg2.o f12.o bindsym.o
-	$(CC) -o usef12pkg2 usef12pkg2.o f12.o bindsym.o -ldl
+f12pkg2:	f12pkg2.o f12.o bindsym.o
+	$(CC) -o f12pkg2 f12pkg2.o f12.o bindsym.o -ldl
 
-usef12bothpkgs:	usef12bothpkgs.o f12.o bindsym.o
-	$(CC) -o usef12bothpkgs usef12bothpkgs.o f12.o bindsym.o -ldl
+f12bothpkgs:	f12bothpkgs.o f12.o bindsym.o
+	$(CC) -o f12bothpkgs f12bothpkgs.o f12.o bindsym.o -ldl
 
-usef12threepkgs:	usef12threepkgs.o f12.o bindsym.o
-	$(CC) -o usef12threepkgs usef12threepkgs.o f12.o bindsym.o -ldl
+f12namedpkgs:	f12namedpkgs.o f12.o bindsym.o
+	$(CC) -o f12namedpkgs f12namedpkgs.o f12.o bindsym.o -ldl
 
-usef34threepkgs:	usef34threepkgs.o f34.o bindsym.o
-	$(CC) -o usef34threepkgs usef34threepkgs.o f34.o bindsym.o -ldl
+f34namedpkgs:	f34namedpkgs.o f34.o bindsym.o
+	$(CC) -o f34namedpkgs f34namedpkgs.o f34.o bindsym.o -ldl
 
 bindsym.o:	bindsym.h bigstr.h
 f12.o:		f12.h bindsym.h bigstr.h

@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <dlfcn.h>
 
-#include "bigstr.h"
 #include "f12.h"
 #include "bindsym.h"
 
@@ -26,7 +25,7 @@
  */
 f12 f12_bind( char *module, char *errmsg )
 {
-	bigstr libname;
+	char libname[1024];
 	sprintf( libname, "lib%s.so", module );
 	void *dl = dlopen( libname, RTLD_NOW );
 	if( dl == NULL )
