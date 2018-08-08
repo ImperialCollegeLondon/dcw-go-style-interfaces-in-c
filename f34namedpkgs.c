@@ -1,5 +1,5 @@
 /*
- *	usef34threepkgs: let's try to access ALL THREE packages,
+ *	f34namedpkgs: let's try to access ALL THREE packages,
  *		pkg1, pkg2 and pkg3 via interface "f34"
  */
 
@@ -37,6 +37,7 @@ void dobind( char *module )
 		printf( "%s->f4(42) returned %lx\n",
 			module, (unsigned long)vp );
 	}
+	printf( "\n" );
 }
 
 

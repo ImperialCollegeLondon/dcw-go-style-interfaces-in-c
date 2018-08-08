@@ -1,5 +1,5 @@
 /*
- *	usef12namedpkgs: let's try to access all packages named on the
+ *	f12namedpkgs: let's try to access all packages named on the
  *		command line (or, if no arguments given) pkg1, pkg2 and pkg3,
  *		via interface "f12"
  */
@@ -36,6 +36,7 @@ void dobind( char *module )
 		n = p->f2();
 		printf( "%s->f2 returned %d\n", module, n );
 	}
+	printf( "\n" );
 }
 
 
