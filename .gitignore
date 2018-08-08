@@ -9,6 +9,6 @@ f12namedpkgs
 f34namedpkgs
 usepkg1
 usepkg2
-eg1/f12.c
-eg1/f12.h
-eg1/pkg1.c
+eg*/f12.[ch]
+eg*/f34.[ch]
+eg*/pkg?.c
