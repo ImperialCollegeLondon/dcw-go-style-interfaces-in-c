@@ -14,14 +14,18 @@
 
 
 /*
- * f12 x = f12_bind( char *module, char *errmsg );
- *	locate "lib<module>.so", and attempt to locate the
- *	required symbols f1 and f2 (or module_f1 and module_f2...),
- *	to "bind" lib<module>.so to the f12 interface.
+ * f12 in = f12_bind( char *module, char *errmsg );
+ *	Attempt to "bind" lib<module>.so to the f12 interface:
+ *	Load "lib<module>.so" into memory, and attempt to locate the
+ *	required symbols f1 and f2 (or <module>_f1 and <module>_f2...)
+ *	within it's namespace.  For now, we just check for existence
+ *	of those function symbols, later on we'll try to check the
+ *	compatibility of the function signatures with the interface.
+ *
  *	If we fail: strcpy an error message into errmsg and return NULL
- *	If we succeed: return an newly malloc()d f12 object
- *	with the function pointers bound to the corresponding
- *	functions in lib<module>.so
+ *	If we succeed: return an newly malloc()d f12 object with the
+ *	slot function pointers bound to the corresponding functions in
+ *	lib<module>.so (now in memory)
  */
 f12 f12_bind( char *module, char *errmsg )
 {
@@ -34,8 +38,8 @@ f12 f12_bind( char *module, char *errmsg )
 		return NULL;
 	}
 
-	f12 r = malloc(sizeof(*r));
-	if( r == NULL )
+	f12 in = malloc(sizeof(*in));
+	if( in == NULL )
 	{
 		strcpy( errmsg, "f12_bind: malloc() failed" );
 		return NULL;
@@ -48,19 +52,19 @@ f12 f12_bind( char *module, char *errmsg )
 	info.libname   = libname;
 	info.errmsg    = errmsg;
 
-	r->f1 = (f12_vvf) bindsym( &info, "f1", "f1_void_void" );
-	if( r->f1 == NULL )
+	in->f1 = (f12_void_void_f) bindsym( &info, "f1", "f1_void_void" );
+	if( in->f1 == NULL )
 	{
-		free(r);
+		free(in);
 		return NULL;
 	}
 
-	r->f2 = (f12_ivf) bindsym( &info, "f2", "f2_int_void" );
-	if( r->f2 == NULL )
+	in->f2 = (f12_int_void_f) bindsym( &info, "f2", "f2_int_void" );
+	if( in->f2 == NULL )
 	{
-		free(r);
+		free(in);
 		return NULL;
 	}
 
-	return r;
+	return in;
 }

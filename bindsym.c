@@ -7,25 +7,25 @@
 #include "bigstr.h"
 #include "bindsym.h"
 
-boundf bindsym( bindsym_info *info, char *symbol, char *sig )
+boundf bindsym( bindsym_info *info, char *fname, char *sig )
 {
-	bigstr sigsym;
-	sprintf( sigsym, "%s_%s", info->module, sig );
-
-	boundf r = dlsym( info->dl, symbol );
+	boundf r = dlsym( info->dl, fname );
 	if( r == NULL )
 	{
-		bigstr s;
-		sprintf( s, "%s_%s", info->module, symbol );
-		r = dlsym( info->dl, s );
+		bigstr m_s;
+		sprintf( m_s, "%s_%s", info->module, fname );
+		r = dlsym( info->dl, m_s );
 		if( r == NULL )
 		{
 			sprintf( info->errmsg,
 				"%s_bind: No symbol '%s' or '%s' in %s",
-				info->interface, symbol, s, info->libname );
-			return r;
+				info->interface, fname, m_s, info->libname );
+			return NULL;
 		}
 	}
+
+	bigstr sigsym;
+	sprintf( sigsym, "%s_%s", info->module, sig );
 
 	// if the signature symbol doesn't exist, fail..
 	if( dlsym( info->dl, sigsym ) == NULL )
